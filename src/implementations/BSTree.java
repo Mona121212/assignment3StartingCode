@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import utilities.BSTreeADT;
 import utilities.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * A generic Binary Search Tree (BST) implementation that stores comparable
@@ -112,6 +116,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 
 	/**
 	 * Removes all elements from this BST.
+	 * (MEMBER 2 IMPLEMENTATION)
 	 */
 	@Override
 	public void clear() {
@@ -152,7 +157,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 	/**
 	 * Recursive search helper.
 	 *
-	 * @param node  the current node
+	 * @param node  the current node
 	 * @param entry the target element
 	 * @return the matching node, or null if not found
 	 */
@@ -197,7 +202,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 	/**
 	 * Recursive insertion helper.
 	 *
-	 * @param node     the current node
+	 * @param node     the current node
 	 * @param newEntry the element to insert
 	 * @return true if inserted
 	 */
@@ -222,6 +227,83 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 			return addHelper(node.getRightChild(), newEntry);
 		}
 	}
+
+    /**
+     * Removes the first instance of the specified element from the BST.
+     * (MEMBER 2 IMPLEMENTATION)
+     *
+     * @param entry the element to be removed.
+     * @return true if the element was successfully removed, false otherwise.
+     * @throws NullPointerException if entry is null.
+     */
+	@Override
+	public boolean remove(E entry) throws NullPointerException {
+		if (entry == null) {
+			throw new NullPointerException("Entry cannot be null");
+		}
+
+		// 1. Check if the element exists using the existing search method
+		if (search(entry) == null) {
+			return false; // Element not found
+		}
+
+		// 2. Element exists: Call the recursive helper to remove it and update the root
+		root = removeHelper(root, entry);
+
+		// 3. Decrement size now that we know the removal was successful
+		size--;
+		return true;
+	}
+
+	/**
+	 * Recursively finds and removes an element from the BST.
+	 * Handles the three cases of deletion (0, 1, or 2 children).
+	 * (MEMBER 2 IMPLEMENTATION)
+	 *
+	 * @param current The current node being examined.
+	 * @param entry The element to be removed.
+	 * @return The node that replaces the current node (new subtree root).
+	 */
+	private BSTreeNode<E> removeHelper(BSTreeNode<E> current, E entry) {
+		if (current == null) {
+			return null; 
+		}
+
+		int compare = entry.compareTo(current.getElement());
+
+		if (compare < 0) {
+			// Element is smaller, go left
+			current.setLeftChild(removeHelper(current.getLeftChild(), entry));
+		} else if (compare > 0) {
+			// Element is larger, go right
+			current.setRightChild(removeHelper(current.getRightChild(), entry));
+		} else {
+			// Node found: Handle the three deletion cases
+
+			// Case 1 & 2: 0 or 1 child
+			if (current.getLeftChild() == null) {
+				return current.getRightChild(); // Returns right child (or null)
+			}
+			if (current.getRightChild() == null) {
+				return current.getLeftChild(); // Returns left child
+			}
+
+			// Case 3: Two children (Use In-Order Successor)
+			// 1. Find successor (smallest node in the right subtree)
+			BSTreeNode<E> successor = findMin(current.getRightChild()); 
+			
+			// 2. Copy the Successor's data to the current node
+			current.setElement(successor.getElement());
+
+			// 3. Recursively delete the Successor from the right subtree.
+			current.setRightChild(removeHelper(current.getRightChild(), successor.getElement()));
+		}
+		return current;
+	}
+    // 
+
+[Image of Binary Search Tree Deletion Logic]
+
 
 	/**
 	 * Removes and returns the node containing the minimum element of the tree.
@@ -301,7 +383,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 
 	/**
 	 * Returns an iterator that performs in-order traversal (left-root-right).
-	 * Produces elements in sorted order.
+	 * Produces elements in sorted order (alphabetical for WordTracker).
 	 *
 	 * @return an in-order traversal iterator
 	 */
@@ -331,7 +413,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 	}
 
 	// ==============================
-	// Iterator Classes
+	// Iterator Classes (Snapshot Approach)
 	// ==============================
 
 	/**
@@ -347,7 +429,10 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 			index = 0;
 			inorderTraversal(root);
 		}
-
+        
+        /**
+         * Recursive helper to populate the list in in-order sequence.
+         */
 		private void inorderTraversal(BSTreeNode<E> node) {
 			if (node != null) {
 				inorderTraversal(node.getLeftChild());
@@ -382,7 +467,10 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 			index = 0;
 			preorderTraversal(root);
 		}
-
+        
+        /**
+         * Recursive helper to populate the list in pre-order sequence.
+         */
 		private void preorderTraversal(BSTreeNode<E> node) {
 			if (node != null) {
 				items.add(node.getElement());
@@ -417,7 +505,10 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 			index = 0;
 			postorderTraversal(root);
 		}
-
+        
+        /**
+         * Recursive helper to populate the list in post-order sequence.
+         */
 		private void postorderTraversal(BSTreeNode<E> node) {
 			if (node != null) {
 				postorderTraversal(node.getLeftChild());
