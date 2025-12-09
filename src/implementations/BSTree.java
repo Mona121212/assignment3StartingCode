@@ -236,7 +236,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
      * @return true if the element was successfully removed, false otherwise.
      * @throws NullPointerException if entry is null.
      */
-	@Override
+
 	public boolean remove(E entry) throws NullPointerException {
 		if (entry == null) {
 			throw new NullPointerException("Entry cannot be null");
@@ -302,7 +302,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 	}
     // 
 
-[Image of Binary Search Tree Deletion Logic]
+//[Image of Binary Search Tree Deletion Logic]
 
 
 	/**
