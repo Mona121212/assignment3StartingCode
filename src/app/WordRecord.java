@@ -54,7 +54,8 @@ public class WordRecord implements Comparable<WordRecord>, Serializable {
      * @param fileName  the name of the file
      * @param lineNumber the line number where the word appeared (must be positive)
      * @throws NullPointerException if fileName is null
-     * @throws IllegalArgumentException if lineNumber is <= 0
+     * @throws IllegalArgumentException if lineNumber is &lt;= 0
+
      */
     public void addLineNumber(String fileName, int lineNumber) {
         if (fileName == null)
