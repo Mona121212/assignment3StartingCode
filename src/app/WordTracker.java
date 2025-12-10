@@ -37,7 +37,7 @@ public class WordTracker {
      * repository back to disk.
      *
      * @param args command-line arguments: input file path, report flag (`-pf`, `-pl`, or `-po`),
-     *             and optional `-f<output-file>` to write the report to a file
+     *             and optional -f&lt;output-file&gt; to write the report to a file
      */
     public static void main(String[] args) {
     	// Validate command-line arguments
