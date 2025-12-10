@@ -194,6 +194,10 @@ public class WordTracker {
             int lineNum = 0;
             while ((line = br.readLine()) != null) {
                 lineNum++;
+                // Remove apostrophes so contractions like "it's" become "its" (not "it" + "s")
+                line = line.replace("'", "");
+                
+                
                 Matcher m = wordPattern.matcher(line);
                 while (m.find()) {
                     String token = m.group().toLowerCase();
