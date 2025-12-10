@@ -9,7 +9,6 @@ import java.util.regex.*;
 import implementations.BSTree;
 import implementations.BSTreeNode;
 import utilities.Iterator;
-import app.WordRecord;
 
 /**
  * Utility application that scans a text file for words, updates a persistent
@@ -295,19 +294,17 @@ public class WordTracker {
                     line = wr.toString();
                     // uses WordRecord.toString()
                 } else { // -po
-                    int total = 0;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(wr.getWord()).append(" -> ");
-                    boolean firstFile = true;
-                    // Append file names with line numbers and compute total
-                    for (Map.Entry<String, List<Integer>> e : occ.entrySet()) {
-                        if (!firstFile) sb.append("; ");
-                        sb.append(e.getKey()).append(": ").append(e.getValue().toString());
-                        total += e.getValue().size();
-                        firstFile = false;
-                    }
-                    sb.append(" ; Total: ").append(total);
-                    line = sb.toString();
+                	int total = wr.getTotalOccurrences();
+                	StringBuilder sb = new StringBuilder();
+                	sb.append(wr.getWord()).append(" -> ");
+                	boolean firstFile = true;
+                	for (Map.Entry<String, List<Integer>> e : occ.entrySet()) {
+                	    if (!firstFile) sb.append("; ");
+                	    sb.append(e.getKey()).append(": ").append(e.getValue().toString());
+                	    firstFile = false;
+                	}
+                	sb.append(" ; Total: ").append(total);
+                	line = sb.toString();
                 }
 
                 // Print the report line

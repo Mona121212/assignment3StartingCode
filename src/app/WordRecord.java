@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import implementations.BSTree;
-
 /**
  * Stores a single word and its occurrences across files.
  *
@@ -19,15 +17,19 @@ import implementations.BSTree;
  * internal representation preserves insertion and avoids exposing mutable lists.
  */
 public class WordRecord implements Comparable<WordRecord>, Serializable {
+	
+	// Map from file name to list of line numbers
+	private final HashMap<String, ArrayList<Integer>> occurrences;
+
+	// Total number of times this word appears (all files, all lines)
+	private int occurrenceCount;
+
     
 	// Serial version UID for serialization
 	private static final long serialVersionUID = 1L;
 
     // The word being recorded
     private final String word;
-
-    // Map from file name to list of line numbers
-    private final HashMap<String, ArrayList<Integer>> occurrences;
 
     // Constructor
     public WordRecord(String word) {
@@ -37,6 +39,7 @@ public class WordRecord implements Comparable<WordRecord>, Serializable {
         }
         this.word = word;
         this.occurrences = new HashMap<>();
+        this.occurrenceCount = 0;
     }
 
     // Add a line number occurrence for a given file
@@ -49,6 +52,10 @@ public class WordRecord implements Comparable<WordRecord>, Serializable {
         if (lineNumber <= 0) {
             throw new IllegalArgumentException("lineNumber must be positive");
         }
+        
+        // Always increment total occurrences (even if same line as before)
+        occurrenceCount++;
+        
         // Get or create the list of line numbers for the file
         ArrayList<Integer> list = occurrences.get(fileName);
         if (list == null) {
@@ -87,6 +94,10 @@ public class WordRecord implements Comparable<WordRecord>, Serializable {
             throw new NullPointerException("other cannot be null");
         }
         return this.word.compareToIgnoreCase(other.word);
+    }
+    
+    public int getTotalOccurrences() {
+        return occurrenceCount;
     }
 
     // String representation of the WordRecord
